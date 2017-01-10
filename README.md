@@ -21,6 +21,8 @@ stability. J. Clim. 19:6425-6432.
 
 
 # Output
-EIS and SST slope in five regions from 36 CMIP3 and CMIP5 models  [%K-1]
+EIS and SST slope in five regions from 36 CMIP3 and CMIP5 models  [Figure, %K-1]
+
+EIS and SST slope averaged over five regions from 36 CMIP3 and CMIP5 models  [nc file, %K-1]
 
 Is a script to draw a figure in the paper included ?: No
