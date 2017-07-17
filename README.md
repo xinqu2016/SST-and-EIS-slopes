@@ -21,6 +21,8 @@ stability. J. Clim. 19:6425-6432.
 | constant    |land cover          | sftlf |  |nc
 
 These variables were downloaded from https://esgf-node.llnl.gov/search/esgf-llnl/.
+Sample input data is given as the compressed nc file.
+
 # Output
 
 Intermediate output: time series of low cloud cover, EIS and SST during the period of 1900-1999
