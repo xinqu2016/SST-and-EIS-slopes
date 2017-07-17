@@ -1,5 +1,5 @@
-; This ncl program computes EIS and SST slopes using the time seris of low cloud cover, EIS and SST in the 20th century. 
-;*******
+; This ncl program computes EIS and SST slopes using the time seris of low cloud cover, EIS and SST in the 20th century with 20 CMIP5 models. 
+;**********************************************
 ; Concepts illustrated:
 ;   - Drawing a simple contour plot
 ;   - Making an axis logarithmic in a contour plot
@@ -17,67 +17,58 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/shea_util.ncl"
 begin
   
 ; low cloud cover
-  f1 = addfile("/Users/xinqu/Projects/gig2_backup/low_cloud_IPCC_AR5/cl_1900_2099_monthly_plevel_5_regions_18_westpart_new.nc","r")
-  f2 = addfile("/Users/xinqu/Projects/gig2_backup/low_cloud_IPCC_AR5/cl_1900_2099_monthly_plevel_5_regions_18_eastpart_new.nc","r")
-  cl_ts = (dim_avg_n(f1->low_cl_regional(:,0:99,:,:),0)+dim_avg_n(f2->low_cl_regional(:,0:99,:,:),0))/2.0
-  print(cl_mean)
+  f1 = addfile("./low_cloud_time_series_1900_1999_CMIP5.nc","r")
+  cl_ts = f1->low_cl_regional
   delete(f1)
-  delete(f2)
-
 ; EIS
-  f1 = addfile("/Users/xinqu/Projects/gig2_backup/low_cloud_IPCC_AR5/LTS_tas_T850_EIS_1900_2099_18_monthly_westpart_new.nc","r")
-  f2 = addfile("/Users/xinqu/Projects/gig2_backup/low_cloud_IPCC_AR5/LTS_tas_T850_EIS_1900_2099_18_monthly_eastpart_new.nc","r")
-  EIS =(f1->EIS_regional(0:2400-1,:,:)+f2->EIS_regional(0:2400-1,:,:))/2.0
-  EIS_t = new((/12,200,5,18/),double)
-  do i=0,200-1
-    do j=0,11
-      EIS_t(j,i,:,:) = EIS(j+i*12,:,:)
-    end do
-  end do
-  EIS_ts = dim_avg_n(EIS_t(:,0:99,:,:),0)
-  delete(EIS)
-  delete(EIS_t)
+  f1 = addfile("./EIS_time_series_1900_1999_CMIP5.nc","r")
+  EIS_ts = f1->EIS_regional
   delete(f1)
-  delete(f2)
-
 ; SST 
-  f1 = addfile("/Users/xinqu/Projects/gig2_backup/low_cloud_IPCC_AR5/SST_1900_2099_18_monthly_westpart_new_free_mode.nc","r")
-  f2 = addfile("/Users/xinqu/Projects/gig2_backup/low_cloud_IPCC_AR5/SST_1900_2099_18_monthly_eastpart_new_free_mode.nc","r")
-  SST = (f1->SST_regional(0:2400-1,:,:)+f2->SST_regional(0:2400-1,:,:))/2.0
-
-  SST_t = new((/12,200,5,18/),double)
-  do i=0,200-1
-    do j=0,11
-      SST_t(j,i,:,:)  = SST(j+i*12,:,:)
-    end do
-  end do
-  SST_ts = dim_avg_n(SST_t(:,0:99,:,:),0)
+  f1 = addfile("./SST_time_series_1900_1999_CMIP5.nc","r")
+  SST_ts = f1->SST_regional
   delete(f1)
-  delete(f2)
-  delete(SST)
-
 ; regression analysis
   slope_cl_2_var = new((/2,5,18/),double)
   do model_no = 0,18-1
     do iregion=0,4
-         x1=dtrend(EIS_ts(1900-1900:1999-1900,iregion,model_no),False)
-         x2=dtrend(SST_ts(1900-1900:1999-1900,iregion,model_no),False)
-         y =dtrend(cl_ts(1900-1900:1999-1900,iregion,model_no),False)
-
+         x1=dtrend(EIS_ts(:,iregion,model_no),False)
+         x2=dtrend(SST_ts(:,iregion,model_no),False)
+         y =dtrend(cl_ts(:,iregion,model_no),False)
          X = new((/3,100/),double) 
          X(0,:) = 1
          X(1,:) = x1
          X(2,:) = x2
          b = reg_multlin(y,X,False)
          slope_cl_2_var(:,iregion,model_no) = b(1:2)
-
          delete(x1)
          delete(x2)
          delete(X)
          delete(y)
     end do
   end do
-  EIS_slope_CMIP5 = dim_avg_n(slope_cl_2_var(0,:,:),0)
-  SST_slope_CMIP5 = dim_avg_n(slope_cl_2_var(1,:,:),0)
+  EIS_slope_CMIP5 = slope_cl_2_var(0,:,:)
+  SST_slope_CMIP5 = slope_cl_2_var(1,:,:)
+
+  SST_slope_output = addfile("./SST_EIS_slope_CMIP5.nc","w")
+  fAtt               = True            ; assign file attributes
+  fAtt@title         = "SST/EIS slope estimates"
+  fAtt@creation_date = systemfunc ("date")
+  fAtt@region_names = "Peru,Namibia,Australia,California,Canary"
+  fAtt@CMIP5_model_names = "BCC-CSM1.1,CCSM4,CSIRO-Mk3.6,CanESM2,FGOALS-s2,GFDL-CM3,GFDL-ESM2G,GFDL-ESM2M,GISS-E2-R,HadGEM2-CC,HadGEM2-ES,IPSL-CM5A-LR,MIROC-ESM,MIROC-ESM-CHEM,MIROC5,MPI-ESM-LR,MRI-CGCM3,NorESM1-M"
+  fileattdef( SST_slope_output, fAtt )
+  SST_slope_CMIP5@unit="%/K"
+  SST_slope_CMIP5!0="regions"
+  SST_slope_CMIP5!1="models"
+  SST_slope_CMIP5&regions = ispan(1,5,1)
+  SST_slope_CMIP5&models = ispan(1,18,1)
+  EIS_slope_CMIP5@unit="%/K"
+  EIS_slope_CMIP5!0="regions"
+  EIS_slope_CMIP5!1="models"
+  EIS_slope_CMIP5&regions = ispan(1,5,1)
+  EIS_slope_CMIP5&models = ispan(1,18,1)
+  SST_slope_output ->SST_slope_CMIP5 = SST_slope_CMIP5
+  SST_slope_output ->EIS_slope_CMIP5 = EIS_slope_CMIP5
 
  end
+
