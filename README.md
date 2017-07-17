@@ -24,6 +24,6 @@ stability. J. Clim. 19:6425-6432.
 
 Intermediate output: time series of low cloud cover, EIS and SST during the period of 1900-1999
 
-Final output: EIS and SST slope averaged over five regions from 36 CMIP models  [figure and nc file, %K-1] Note that the nc files only contain values for 18 CMIP5 models.
+Final output: EIS and SST slope averaged over five regions from 36 CMIP models [figure and nc file, which only contains values for 18 CMIP5 models.
 
 Is a script to draw a figure in the paper included ?: No
