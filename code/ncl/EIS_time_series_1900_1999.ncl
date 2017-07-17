@@ -1,5 +1,4 @@
-; This ncl program computes annual-mean EIS time series based on 20th-century simulations
-
+; This ncl program computes annual-mean EIS time series based on 20th-century simulations with 20 CMIP5 models
  load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_code.ncl"
  load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_csm.ncl"
  load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/contributed.ncl"
@@ -13,7 +12,7 @@
  EIS_regional = new((/100, 5,18/),double) 
 
  diri_init  = systemfunc("ls /Volumes/Data_Server/CMIP5_modeloutput/mo")
- model_index = (/1,2,4,5,7,8,9,10,11,12,13,15,18,19,20,21,23,24/)
+ model_index = (/2,5,7,8,10,11,12,13,15,16,17,19,22,23,24,25,28,29/)
  diri = diri_init(model_index)
 
  start_year   = (/1850,1850,1850,1850,1850,1860,1861,1896,1850,1885,1885,1850,1850,1850,1850,1850,1850,1850/)
@@ -41,7 +40,7 @@
         ta_djfmam_mean = f_ta_hist[:]->ta((1900-start_year(model_no)+i)*12+imonth,aa,:,:);
         tas_djfmam_mean = f_tas_hist[:]->tas((1900-start_year(model_no)+i)*12+imonth,:,:);
         sp = f_ps_hist[:]->ps((1900-start_year(model_no)+i)*12+imonth,:,:);
-        if (diri(model_no).eq."HadGEM2-CC" .or. diri(model_no).eq."HadGEM2-ES")
+        if (diri(model_no).eq."HadGEM2-CC" .or. diri(model_no).eq."HadGEM2-ES") ; spatial interpolation is needed
             f_tas_hist_0    = addfile(file_tas_hist(0), "r")   ; note the "s" of addfile
             tas_lat         = f_tas_hist_0->lat
             tas_lon         = f_tas_hist_0->lon
@@ -174,7 +173,6 @@
      delete(EIS0)
      delete(weight)
   end do
-
   delete(sftlf)
   delete(lat)
   delete(lon)
@@ -187,8 +185,22 @@
   delete(lon_2d)
   delete(aa)
   delete(EIS_3d)
-
  end do;
- f_output = addfile("EIS_time_series_1900_1999.nc","c");  
+
+ f_output = addfile("EIS_time_series_1900_1999_CMIP5.nc","w");  
+ fAtt               = True            ; assign file attributes
+ fAtt@title         = "annual-mean EIS time series in 18 CMIP5 models during the period of 1900-1999"
+ fAtt@creation_date = systemfunc ("date")
+ fAtt@region_names = "Peru,Namibia,Australia,California,Canary"
+ fAtt@CMIP5_model_names = "BCC-CSM1.1,CCSM4,CSIRO-Mk3.6,CanESM2,FGOALS-s2,GFDL-CM3,GFDL-ESM2G,GFDL-ESM2M,GISS-E2-R,HadGEM2-CC,HadGEM2-ES,IPSL-CM5A-LR,MIROC-ESM,MIROC-ESM-CHEM,MIROC5,MPI-ESM-LR,MRI-CGCM3,NorESM1-M"
+ fileattdef(f_output, fAtt )
+ EIS_regional@unit="K"
+ EIS_regional!0="years"
+ EIS_regional!1="regions"
+ EIS_regional!2="models"
+ EIS_regional&years = ispan(1900,1999,1)
+ EIS_regional&regions = ispan(1,5,1)
+ EIS_regional&models = ispan(1,18,1)
  f_output->EIS_regional = EIS_regional
+
 
