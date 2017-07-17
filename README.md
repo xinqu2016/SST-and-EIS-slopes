@@ -25,8 +25,8 @@ Sample input data is provided as compressed nc files. To use these data for the 
 
 # Output
 
-Intermediate output: time series of low cloud cover, EIS and SST during the period of 1900-1999
+Intermediate output: time series of low cloud cover, EIS and SST during the period of 1900-1999. They are saved in the following files, respectively: low_cloud_time_series_1900_1999_CMIP5.nc, EIS_time_series_1900_1999_CMIP5.nc and SST_time_series_1900_1999_CMIP5.nc 
 
-Final output: EIS and SST slope averaged over five regions from 36 CMIP models [figure and nc file, which only contains values for 18 CMIP5 models.
+Final output: EIS and SST slope averaged over five regions from 36 CMIP models [figure and nc file (SST_EIS_slope_CMIP5.nc), which only contains values for 18 CMIP5 models.
 
 Is a script to draw a figure in the paper included ?: No
