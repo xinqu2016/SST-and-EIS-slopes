@@ -13,7 +13,7 @@ stability. J. Clim. 19:6425-6432.
 
 | Frequency | Variable |  CMOR lables |  Unit  |  File Format |
 |:----------  |:--------------------|:----------------|:---------------|:------------|
-| annual mean |cloud cover  | cl | %  | nc
+| monthly mean |cloud cover  | cl | %  | nc
 |             |skin temperature | ts | K |nc  
 |             |Surface temperature | tas  | K | nc
 |             |air temperature     | ta   |K |nc
