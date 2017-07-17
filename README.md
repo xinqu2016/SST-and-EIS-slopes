@@ -18,7 +18,7 @@ stability. J. Clim. 19:6425-6432.
 |             |Surface temperature | tas  | K | nc
 |             |air temperature     | ta   |K |nc
 |             |surface pressure    | ps   |Pa  |nc   
-| constant    |land cover          | sftlf
+| constant    |land cover          | sftlf |  |nc
 
 # Output
 
