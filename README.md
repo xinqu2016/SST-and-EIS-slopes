@@ -21,7 +21,7 @@ stability. J. Clim. 19:6425-6432.
 | constant    |land cover          | sftlf |  |nc
 
 These variables were downloaded from https://esgf-node.llnl.gov/search/esgf-llnl/.
-Sample input data is provided as compressed nc files. To use these data for the testing purpose, one needs to change the code provided here. 
+Sample input data is provided as compressed nc files. To use these data for the testing purpose, however, one needs to change the part of the code where data is read. 
 
 # Output
 
