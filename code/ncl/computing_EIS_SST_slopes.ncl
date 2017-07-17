@@ -47,10 +47,10 @@ begin
          delete(y)
     end do
   end do
-  EIS_slope_CMIP5 = slope_cl_2_var(0,:,:)
-  SST_slope_CMIP5 = slope_cl_2_var(1,:,:)
+  EIS_slope_CMIP5 = dim_avg_n(slope_cl_2_var(0,:,:),0)
+  SST_slope_CMIP5 = dim_avg_n(slope_cl_2_var(1,:,:),0)
 
-  SST_slope_output = addfile("./SST_EIS_slope_CMIP5.nc","w")
+  SST_slope_output = addfile("./SST_EIS_slope_CMIP5.nc","c")
   fAtt               = True            ; assign file attributes
   fAtt@title         = "SST/EIS slope estimates"
   fAtt@creation_date = systemfunc ("date")
@@ -58,14 +58,10 @@ begin
   fAtt@CMIP5_model_names = "BCC-CSM1.1,CCSM4,CSIRO-Mk3.6,CanESM2,FGOALS-s2,GFDL-CM3,GFDL-ESM2G,GFDL-ESM2M,GISS-E2-R,HadGEM2-CC,HadGEM2-ES,IPSL-CM5A-LR,MIROC-ESM,MIROC-ESM-CHEM,MIROC5,MPI-ESM-LR,MRI-CGCM3,NorESM1-M"
   fileattdef( SST_slope_output, fAtt )
   SST_slope_CMIP5@unit="%/K"
-  SST_slope_CMIP5!0="regions"
-  SST_slope_CMIP5!1="models"
-  SST_slope_CMIP5&regions = ispan(1,5,1)
+  SST_slope_CMIP5!0="models"
   SST_slope_CMIP5&models = ispan(1,18,1)
   EIS_slope_CMIP5@unit="%/K"
-  EIS_slope_CMIP5!0="regions"
-  EIS_slope_CMIP5!1="models"
-  EIS_slope_CMIP5&regions = ispan(1,5,1)
+  EIS_slope_CMIP5!0="models"
   EIS_slope_CMIP5&models = ispan(1,18,1)
   SST_slope_output ->SST_slope_CMIP5 = SST_slope_CMIP5
   SST_slope_output ->EIS_slope_CMIP5 = EIS_slope_CMIP5
